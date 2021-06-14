@@ -1,0 +1,24 @@
+{
+  "name": "wpt-crawler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start" : "node index webpagetest --filePath ./whiteListUrls.txt",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdulsuhail/wpt-crawler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abdulsuhail/wpt-crawler/issues"
+  },
+  "homepage": "https://github.com/abdulsuhail/wpt-crawler#readme",
+  "dependencies": {
+    "csv-writer": "^1.6.0",
+    "webpagetest": "^0.4.0"
+  }
+}

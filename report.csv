@@ -1,0 +1,12 @@
+URL,Test ID,Page Links,CumulativeLayoutShift,Images,DomComplete,JS Bytes Uncompressed,Html Bytes Uncompressed,CSS Bytes Uncompressed,Long Tasks,Level
+http://www.amazon.in,210614_AiDcEP_7ded8305bd76a7b6378f5de58ef938fa,300,0.031028897399999998,30898,7167,864380,470121,491371,7,0
+https://www.amazon.in/music/prime?ref=footer_apm,210614_BiDcT6_fba75983d3be4ce5c5bc92d66f0d2813,88,0.376225013,3105,5273,897795,210779,646602,2,1
+https://www.amazon.in/gp/help/customer/display.html?nodeId=200507590&ref_=footer_gw_m_b_he,210614_BiDc80_550af2de05f434d25136f15f6b042e56,253,0.09089745719999999,4810,4020,1085870,245048,462772,2,1
+https://www.amazon.in/gp/customer-preferences/select-language/ref=footer_lang?ie=UTF8&preferencesReturnUrl=%2F,210614_AiDcXN_eb50ec0d589f84824dc615e0a1b6be3a,81,0,910,3108,1001209,227572,457765,2,1
+https://www.amazon.in/gp/help/customer/display.html?nodeId=202075050&ref_=footer_iba,210614_AiDc5H_60fca10d58a1c6c5ed925f93de66fbc4,99,0.0012097456000000001,2187,4828,1074717,227498,490077,2,1
+https://www.amazon.in/gp/help/customer/display.html?nodeId=200545940&ref_=footer_cou,210614_AiDcGQ_dc6cf60ebc59cd0dfcb2a6b34d06b789,141,0.0454973085,2164,3703,1073422,272431,487937,3,1
+https://www.amazon.in/business?ref=footer_aingw,210614_AiDc1C_ace435f83ffaea1022830a1e5cd06281,86,0.22025460430000002,3507,4808,818915,241389,483835,2,1
+https://www.amazon.in/ref=footer_logo,210614_BiDc3C_f1a1657e302a0e2e40c7c9eb5c497156,287,0.0483768647,28874,6044,865675,457197,492207,9,1
+https://www.amazon.in/gp/help/customer/display.html?nodeId=200534380&ref_=footer_privacy,210614_AiDc33_83b38237e895bb00a5cab7c955941f35,151,0.0174816078,2133,3694,1074717,264888,488774,3,1
+https://www.amazon.in/now?ref=footer_amznow,210614_BiDcEN_9ed263e69cab5509bcba27a9defe7d83,81,0.6096410167,2232,4083,817620,225761,481695,1,1
+http://www.amazon.com,210614_AiDcE3_f41b4bcd1e6a0d2faf022928a7916032,322,0,29161,7315,2436975,473396,690351,9,0
