@@ -5,7 +5,7 @@
 
 The WebPageTest Crawler, crawls through the website to fetch URLs and then runs test on them. Level and URL limit can be given.
 
-![image](https://user-images.githubusercontent.com/31168643/122048471-ead2c180-cdfe-11eb-8145-2a02fb732d7f.png)
+![image](https://user-images.githubusercontent.com/31168643/122060468-40ad6680-ce0b-11eb-9f25-ea51eaac22f9.png)
 
 Requires node, npm.
 
