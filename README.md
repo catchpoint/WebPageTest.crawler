@@ -19,7 +19,7 @@ npm install
 ### 2. Updating config values
 
 There are 3 main config values : - 
-  1. wpt_api_key - [You can get yours here](https://app.webpagetest.org/ui/entry/wpt/signup?enableSub=true&utm_source=docs&utm_medium=github&utm_campaign=slackbot&utm_content=account)
+  1. wpt_api_key - WebPageTest API Key. [Get yours here](https://app.webpagetest.org/ui/entry/wpt/signup?enableSub=true&utm_source=docs&utm_medium=github&utm_campaign=slackbot&utm_content=account)
   2. level - integer value, specifies maximum depth the crawler should crawl.
   3. url_limit - integer value, specifies maximum limit of URLs need to tested.
 Note : - Crawling stops if either of them reaches a limit.
