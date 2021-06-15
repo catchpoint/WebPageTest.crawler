@@ -41,7 +41,6 @@ let wptOptions = {
     ].join('\n'),
     commandLine: '--disable-web-security',
 }
-// let level = 0;
 let linksArray = [];
 let queue = new Queue();
 argv.command('webpagetest', 'Read a file', (yargs) => { }, async (argv) => {
@@ -83,7 +82,6 @@ argv.command('webpagetest', 'Read a file', (yargs) => { }, async (argv) => {
         })
         records.push(csvObject);
     })
-    // console.log("queue : -",queue)
     csvWriter.writeRecords(records)       // returns a promise
         .then(() => {
             console.log('Done Writing To CSV');
@@ -94,8 +92,6 @@ let finalResult = new Map();
 let submission_count = 0;
 let recursiveCaller = (urls_queue) => {
 
-    // let level;
-    // console.log(urls[0])
     if (linksArray.length <= 10) {
         return Promise.all(urls_queue.items.map(async url_object => {
             let url = url_object;
@@ -106,15 +102,14 @@ let recursiveCaller = (urls_queue) => {
                     console.log("Timer reset");
                     submission_count = 0;
                 }
-                if (!linksArray.includes(url) && linksArray.length <= 10 && submission_count < 5) {
+                if (!linksArray.includes(url) && linksArray.length <= config.url_limit && submission_count < 5) {
                     linksArray.push(url);
                     submission_count++;
                     let url_queue_onject = urls_queue.front()
                     let url_from_queue = url_queue_onject.url;
                     level = url_queue_onject.level;
-                    // console.log(url_queue_onject)
                     urls_queue.dequeue();
-                    if (url_queue_onject.level <= 3) {
+                    if (url_queue_onject.level <= config.level) {
                         let wptResult = await helpers.runTest(wpt, url_from_queue, wptOptions);
                         wptResult.result.data.median.firstView.test_id = wptResult.result.data.id;
                         wptResult.result.data.median.firstView.level = url_queue_onject.level;

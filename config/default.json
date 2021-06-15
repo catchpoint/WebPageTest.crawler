@@ -1,3 +1,5 @@
 {
-    "wpt_api_key" : "WPT_API_KEY"
+    "wpt_api_key" : "WPT_API_KEY",
+    "level" : 3,
+    "url_limit" : 10
 }
