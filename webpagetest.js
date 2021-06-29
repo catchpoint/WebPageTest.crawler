@@ -1,6 +1,24 @@
+#!/usr/bin/env node
+const program = require('commander')
+const { description, version } = require('./package.json')
+
+program
+ .description(description)
+ .version(version, '-v, - version')
+ .requiredOption('-k, --key <key>','[Required] Add WPT Key')
+ .requiredOption('-f, --filePath <filePath>','[Required] File Path for URLs')
+ .option('-l, --level [level]','[Optional] Depth to reach',parseInt)
+ .option('-ul, --url_limit [url_limit]','[Optional] Max URLs to reach',parseInt)
+
+ .parse(process.argv)
+ 
+const options = program.opts();
+
+let level = options.level || 3;
+let url_limit = options.url_limit || 10;
+
 const WebPageTest = require("webpagetest");
-const config = require('config');
-const wpt = new WebPageTest('www.webpagetest.org', config.wpt_api_key);
+const wpt = new WebPageTest('www.webpagetest.org', options.key);
 const helpers = require('./utils/helperFunctions');
 const argv = require('yargs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
@@ -46,7 +64,7 @@ let queue = new Queue();
 argv.command('webpagetest', 'Read a file', (yargs) => { }, async (argv) => {
 
     console.log('Reading your file now...');
-    let fileData = await helpers.promisedReadFile(argv.filePath);
+    let fileData = await helpers.promisedReadFile(options.filePath);
 
     const wptUrls = fileData.split(',');
 
@@ -73,7 +91,6 @@ argv.command('webpagetest', 'Read a file', (yargs) => { }, async (argv) => {
         csvObject.longTasks = value.longTasks.length;
         csvObject.level = value.level;
 
-        console.log("level with url :-", value.level, key)
         value.chromeUserTiming.forEach(chromObject => {
             if (chromObject.name == 'CumulativeLayoutShift')
                 csvObject.CumulativeLayoutShift = chromObject.value;
@@ -99,17 +116,17 @@ let recursiveCaller = (urls_queue) => {
 
                 if (submission_count == 5) {
                     sleep(3000);
-                    console.log("Timer reset");
+                    // console.log("Timer reset");
                     submission_count = 0;
                 }
-                if (!linksArray.includes(url) && linksArray.length <= config.url_limit && submission_count < 5) {
+                if (!linksArray.includes(url) && linksArray.length <= url_limit && submission_count < 5) {
                     linksArray.push(url);
                     submission_count++;
                     let url_queue_onject = urls_queue.front()
                     let url_from_queue = url_queue_onject.url;
                     level = url_queue_onject.level;
                     urls_queue.dequeue();
-                    if (url_queue_onject.level <= config.level) {
+                    if (url_queue_onject.level <= level) {
                         let wptResult = await helpers.runTest(wpt, url_from_queue, wptOptions);
                         wptResult.result.data.median.firstView.test_id = wptResult.result.data.id;
                         wptResult.result.data.median.firstView.level = url_queue_onject.level;

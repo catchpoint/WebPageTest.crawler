@@ -17,7 +17,6 @@ exports.runTest = (wpt, url, options) => {
     let tempOptions = JSON.parse(JSON.stringify(options));
 
     return new Promise((resolve, reject) => {
-        console.info(`Submitting test for ${url}...`);
         wpt.runTest(url, tempOptions, async(err, result) => {
             try {
                 if (result) {
