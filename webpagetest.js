@@ -8,7 +8,6 @@ const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const Queue = require('./utils/queue')
 
 program
- .description(description)
  .version(version, '-v, - version')
  .requiredOption('-k, --key <key>','[Required] Add WPT Key')
  .requiredOption('-f, --filePath <filePath>','[Required] File Path for URLs')
