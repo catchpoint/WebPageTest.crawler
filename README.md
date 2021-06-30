@@ -26,7 +26,7 @@ Note : - Crawling stops if either of them reaches a limit.
 
 ### 3. Adding a initial URLs txt file
 
-You can add your initial set of URLs to the whiteListUrls.txt file by seperating them using a coma.
+You can add your initial set of URLs to the startingUrls.txt file by seperating them using a coma.
 
 ![image](https://user-images.githubusercontent.com/31168643/122050545-2a021200-ce01-11eb-9400-31e7716791c0.png)
 
@@ -37,3 +37,22 @@ Start the node-server by running `npm start`
 npm start
 ```
 Booyah, once the crawl-testing is complete you'll have a report.csv file which includes performance details of the URLs crawled.
+
+## Running as a npm module
+You can the project as npm module as well.
+
+### 1. Install as npm module
+```bash
+npm i https://github.com/abdulsuhail/wpt-crawler.git
+```
+
+### 2. Lets fire it up
+
+```bash
+npx wpt-crawler -k "wpt_api_key" -f "./startingUrls.txt" 
+```
+### 3. To lookup more options
+
+```bash
+npx wpt-crawler -h
+```
