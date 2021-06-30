@@ -45,17 +45,6 @@ let wptOptions = {
     "pollResults": 25,
     "timeout": 600,
     "timeline": true,
-    customMetrics: [
-        '[memory]',
-        'return new Promise((resolve) => { performance.measureUserAgentSpecificMemory().then((value) => { resolve(value.bytes); }); });',
-        '[pageLinks]',
-        'let urls=[];',
-        'for(var i = document.links.length; i --> 0;)',
-        'if(document.links[i].hostname === location.hostname)',
-        'urls.push(document.links[i].href)',
-        'return urls',
-    ].join('\n'),
-    commandLine: '--disable-web-security',
 }
 let linksArray = [];
 let queue = new Queue();
