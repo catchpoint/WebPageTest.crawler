@@ -2,7 +2,6 @@
 const program = require('commander')
 const { description, version } = require('./package.json')
 const WebPageTest = require("webpagetest");
-const wpt = new WebPageTest('www.webpagetest.org', options.key);
 const helpers = require('./utils/helperFunctions');
 const argv = require('yargs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
@@ -18,6 +17,8 @@ program
  .parse(process.argv)
 
 const options = program.opts();
+const wpt = new WebPageTest('www.webpagetest.org', options.key);
+
 let level = options.level || 3;
 let url_limit = options.url_limit || 10;
 
