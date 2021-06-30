@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 const program = require('commander')
 const { description, version } = require('./package.json')
+const WebPageTest = require("webpagetest");
+const wpt = new WebPageTest('www.webpagetest.org', options.key);
+const helpers = require('./utils/helperFunctions');
+const argv = require('yargs');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const Queue = require('./utils/queue')
 
 program
  .description(description)
@@ -9,20 +15,12 @@ program
  .requiredOption('-f, --filePath <filePath>','[Required] File Path for URLs')
  .option('-l, --level [level]','[Optional] Depth to reach',parseInt)
  .option('-ul, --url_limit [url_limit]','[Optional] Max URLs to reach',parseInt)
-
  .parse(process.argv)
- 
-const options = program.opts();
 
+const options = program.opts();
 let level = options.level || 3;
 let url_limit = options.url_limit || 10;
 
-const WebPageTest = require("webpagetest");
-const wpt = new WebPageTest('www.webpagetest.org', options.key);
-const helpers = require('./utils/helperFunctions');
-const argv = require('yargs');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const Queue = require('./utils/queue')
 const csvWriter = createCsvWriter({
     path: './report.csv',
     header: [
@@ -61,13 +59,11 @@ let wptOptions = {
 }
 let linksArray = [];
 let queue = new Queue();
-argv.command('webpagetest', 'Read a file', (yargs) => { }, async (argv) => {
 
-    console.log('Reading your file now...');
-    let fileData = await helpers.promisedReadFile(options.filePath);
+helpers.promisedReadFile(options.filePath).then(async fileData =>{
 
+    console.log('File Read Successful')
     const wptUrls = fileData.split(',');
-
     wptUrls.forEach(value => {
 
         queue.enqueue({
@@ -103,7 +99,11 @@ argv.command('webpagetest', 'Read a file', (yargs) => { }, async (argv) => {
         .then(() => {
             console.log('Done Writing To CSV');
         });
-}).argv;
+
+}).catch(err =>{
+
+    console.log('Error while crawling')
+})
 
 let finalResult = new Map();
 let submission_count = 0;
@@ -116,7 +116,6 @@ let recursiveCaller = (urls_queue) => {
 
                 if (submission_count == 5) {
                     sleep(3000);
-                    // console.log("Timer reset");
                     submission_count = 0;
                 }
                 if (!linksArray.includes(url) && linksArray.length <= url_limit && submission_count < 5) {
