@@ -1,1 +1,1 @@
-http://www.amazon.in,http://www.amazon.com
+https://www.webpagetest.org/themetrictimes/

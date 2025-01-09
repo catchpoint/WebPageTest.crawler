@@ -12,17 +12,19 @@ Requires node, npm.
 ### 1. Installing Packages
 
 Once you have cloned the project run `npm install` to install dependencies.
+
 ```bash
 npm install
 ```
 
 ### 2. Updating config values
 
-There are 3 main config values : - 
-  1. wpt_api_key - WebPageTest API Key. [Get yours here](https://app.webpagetest.org/ui/entry/wpt/signup?enableSub=true&utm_source=docs&utm_medium=github&utm_campaign=slackbot&utm_content=account)
-  2. level - integer value, specifies maximum depth the crawler should crawl.
-  3. url_limit - integer value, specifies maximum limit of URLs need to tested.
-Note : - Crawling stops if either of them reaches a limit.
+There are 3 main config values : -
+
+1. wpt_api_key - WebPageTest API Key. [Get yours here](https://app.webpagetest.org/ui/entry/wpt/signup?enableSub=true&utm_source=docs&utm_medium=github&utm_campaign=slackbot&utm_content=account)
+2. level - integer value, specifies maximum depth the crawler should crawl.
+3. limit - integer value, specifies maximum limit of URLs need to tested.
+   Note : - Crawling stops if either of them reaches a limit.
 
 ### 3. Adding a initial URLs txt file
 
@@ -32,27 +34,10 @@ You can add your initial set of URLs to the startingUrls.txt file by seperating 
 
 ### 4. Lets fire it up
 
-Start the node-server by running `npm start`
+Start the node-server by running
+
 ```bash
-npm start
+npm run build & node build/index.js -k [YOUR_API_KEY] -f ./startingUrls.txt
 ```
+
 Booyah, once the crawl-testing is complete you'll have a report.csv file which includes performance details of the URLs crawled.
-
-## Running as a npm module
-You can the project as npm module as well.
-
-### 1. Install as npm module
-```bash
-npm i https://github.com/abdulsuhail/wpt-crawler.git
-```
-
-### 2. Lets fire it up
-
-```bash
-npx wpt-crawler -k "wpt_api_key" -f "./startingUrls.txt" 
-```
-### 3. To lookup more options
-
-```bash
-npx wpt-crawler -h
-```
