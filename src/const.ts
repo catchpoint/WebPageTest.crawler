@@ -1,6 +1,6 @@
 import { RecordKey } from './types';
 
-export const WPT_SERVER = 'https://webpagetest.org';
+export const WPT_SERVER = 'https://www.webpagetest.org';
 export const REPORT_FILE = '../report.csv';
 export const DEFAULT_DELIMITER = ';';
 export const DEFAULT_MAX_DEPTH = 1; // change that at your own risk (ㆆ _ ㆆ)
