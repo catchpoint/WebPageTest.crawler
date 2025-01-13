@@ -11,7 +11,7 @@ Requires node, npm.
 
 ### 1. Installing Packages
 
-Once you have cloned the project run `npm install` to install dependencies.
+Once you have cloned the project run `npm install` to install dependencies. requires node v22.13.0 minumum
 
 ```bash
 npm install
@@ -33,8 +33,6 @@ You can add your initial set of URLs to the startingUrls.txt file by seperating 
 ![image](https://user-images.githubusercontent.com/31168643/122050545-2a021200-ce01-11eb-9400-31e7716791c0.png)
 
 ### 4. Lets fire it up
-
-Start the node-server by running
 
 ```bash
 npm run build & node build/index.js -k [YOUR_API_KEY] -f ./startingUrls.txt

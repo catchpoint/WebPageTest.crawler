@@ -6,7 +6,7 @@ import { REPORT_FILE, CSV_HEADER, DEFAULT_DELIMITER } from './const';
 
 export const runTest = (wptRef: WebPageTest, url: string, options: any, depth?: number | string): Promise<TRecord> => {
   return new Promise((resolve, reject) => {
-    wptRef.runTest(url, options, async (_, result) => {
+    wptRef.runTest(url, options, (_, result) => {
       const { statusCode, statusText, data } = result;
       let response: TRecord = { url, statusCode, statusText, depth: +(depth ?? 0) };
       if (statusCode !== 200 || !data?.testId) {
@@ -22,9 +22,9 @@ export const runTest = (wptRef: WebPageTest, url: string, options: any, depth?: 
   });
 };
 
-export const getIdealTestLocaiton = (wptRef: WebPageTest): Promise<string> => {
+export const getIdealTestLocation = (wptRef: WebPageTest): Promise<string> => {
   return new Promise((resolve, reject) => {
-    wptRef.getLocations({}, async (a, result) => {
+    wptRef.getLocations({}, (_, result) => {
       if (!result || result.response.statusCode !== 200) {
         reject(result?.response.statusText);
         return;
@@ -43,7 +43,7 @@ export const getResult = (wptRef: WebPageTest, id?: string | number): Promise<Pa
       return;
     }
 
-    wptRef.getTestResults(`${id}`, { median: 0, standard: 0, average: 0 } as any, async (e, result) => {
+    wptRef.getTestResults(`${id}`, { median: 0, standard: 0, average: 0 } as any, (_, result) => {
       if (result?.statusCode !== 200) {
         reject(result?.statusText);
         return;
@@ -69,14 +69,20 @@ export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve
 
 export const updateReport = (records: TRecord[]) => {
   const csvWriter = createObjectCsvWriter({
-    path: path.resolve(__dirname, REPORT_FILE),
+    path: path.resolve(process.cwd(), REPORT_FILE),
     header: CSV_HEADER,
     fieldDelimiter: DEFAULT_DELIMITER,
   });
   return csvWriter.writeRecords(records);
 };
 
-export const trimUrl = (url: string) => `${url.substring(0.1)}...`;
+export const trimUrl = (url: string) => {
+  const _url = url.substring(0, 100);
+  if (url.length > 100) {
+    return `${_url}...`;
+  }
+  return _url;
+};
 // maybe for later
 
 // export const combine = (a: TCsvRecord[], b: TCsvRecord[], prop: keyof TCsvRecord) =>

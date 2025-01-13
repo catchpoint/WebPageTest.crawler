@@ -17,7 +17,7 @@ export enum RecordKey {
 
 export enum RecordStatus {
   'running' = 'running',
-  'completed' = 'commpleted',
+  'completed' = 'completed',
   'error' = 'error',
 }
 

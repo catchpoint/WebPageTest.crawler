@@ -4,13 +4,13 @@ import * as fs from 'fs';
 import WebPageTest from 'webpagetest';
 import { program } from 'commander';
 import colors from 'yoctocolors';
-import { getResult, getIdealTestLocaiton, runTest, sleep, updateReport, trimUrl } from './utils';
+import { getResult, getIdealTestLocation, runTest, sleep, updateReport, trimUrl } from './utils';
 import {
   DEFAULT_DELIMITER,
   DEFAULT_LOCATION,
   DEFAULT_MAX_DEPTH,
   DEFAULT_TEST_CONFIGURATION,
-  POLL_INTERVALL_MS,
+  POLL_INTERVAL_MS,
   WPT_SERVER,
 } from './const';
 import { JobType, TJob, TRecord } from './types';
@@ -42,7 +42,7 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
   let location: string | null = DEFAULT_LOCATION;
   if (!location) {
     try {
-      location = await getIdealTestLocaiton(wpt);
+      location = await getIdealTestLocation(wpt);
     } catch (error) {
       console.log(colors.red('No location found...'));
       return;
@@ -77,7 +77,7 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
           if (_depth >= MAX_DEPTH) {
             console.log(
               colors.cyan(
-                `Found ${result.pageLinks?.length ?? 0} links for ${job.testId} (${trimUrl(job.url)})) but reached max depth`,
+                `Found ${result.pageLinks?.length ?? 0} links for ${job.testId} (${trimUrl(job.url)}) but reached max depth`,
               ),
             );
             break;
@@ -92,6 +92,11 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
               console.log(colors.cyan(`Reached url limit, skipping: ${trimUrl(job.url)}`));
               return;
             }
+
+            if (tests.findIndex((t) => t.url === link) != -1 || queue.findIndex((q) => q.url === link) != -1) {
+              console.log(colors.cyan(`Skipping duplicated link ${trimUrl(job.url)}`));
+              return;
+            }
             queue.push({ type: JobType.RUN_TEST, url: link, depth: _depth + 1 });
           });
         } catch (error) {
@@ -103,7 +108,7 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
         break;
     }
     updateReport(tests).then(() => console.log(colors.green('Report updated...')));
-    await sleep(POLL_INTERVALL_MS);
+    await sleep(POLL_INTERVAL_MS);
   }
   updateReport(tests).then(() => console.log(colors.greenBright('Done...')));
 })();
