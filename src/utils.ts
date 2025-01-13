@@ -67,7 +67,7 @@ export const getResult = (wptRef: WebPageTest, id?: string | number): Promise<Pa
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const updateReport = (records: TRecord[]) => {
+export const updateReport = (records: Partial<TRecord>[]) => {
   const csvWriter = createObjectCsvWriter({
     path: path.resolve(process.cwd(), REPORT_FILE),
     header: CSV_HEADER,

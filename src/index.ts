@@ -26,7 +26,7 @@ program
   .parse(process.argv);
 
 const queue: TJob[] = [];
-let tests: TRecord[] = [];
+const tests = new Map<string | number, Partial<TRecord>>();
 const options = program.opts();
 
 const MAX_DEPTH = options.level ?? DEFAULT_MAX_DEPTH;
@@ -53,7 +53,7 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
   while (queue.length > 0) {
     const job = queue.shift();
     if (!job) {
-      break;
+      continue;
     }
 
     switch (job.type) {
@@ -61,18 +61,23 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
         try {
           console.log(colors.magenta(`Running: ${trimUrl(job.url)}`));
           const t = await runTest(wpt, job.url, { ...DEFAULT_TEST_CONFIGURATION, location }, job.depth);
-          tests.push(t);
-          queue.push({ type: JobType.CHECK_RESULT, ...t });
+          if (t.testId) {
+            tests.set(t.testId, t);
+            queue.push({ type: JobType.CHECK_RESULT, ...t });
+          }
         } catch (error) {
-          tests.push(error as TRecord);
+          tests.set(job.url, error as TRecord);
         }
         break;
       case JobType.CHECK_RESULT:
         try {
+          if (!job.testId) {
+            continue;
+          }
           console.log(colors.blue(`Checking status for: ${trimUrl(job.url)}`));
-          const idx = tests.findIndex((t) => t.testId === job.testId);
           const result = await getResult(wpt, job.testId);
-          tests[idx] = { ...tests[idx], ...result };
+          const _curr = tests.get(job.testId) ?? {};
+          tests.set(job.testId, { ..._curr, ...result });
           const _depth = +(job.depth ?? 0);
           if (_depth >= MAX_DEPTH) {
             console.log(
@@ -88,12 +93,15 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
             ),
           );
           result.pageLinks?.forEach((link) => {
-            if (tests.length >= options.limit) {
+            if (Object.keys(tests).length >= options.limit) {
               console.log(colors.cyan(`Reached url limit, skipping: ${trimUrl(job.url)}`));
               return;
             }
 
-            if (tests.findIndex((t) => t.url === link) != -1 || queue.findIndex((q) => q.url === link) != -1) {
+            if (
+              Array.from(tests.values()).findIndex((t) => t.url === link) != -1 ||
+              queue.findIndex((q) => q.url === link) != -1
+            ) {
               console.log(colors.cyan(`Skipping duplicated link ${trimUrl(job.url)}`));
               return;
             }
@@ -107,8 +115,8 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
       default:
         break;
     }
-    updateReport(tests).then(() => console.log(colors.green('Report updated...')));
+    updateReport(Array.from(tests.values())).then(() => console.log(colors.green('Report updated...')));
     await sleep(POLL_INTERVAL_MS);
   }
-  updateReport(tests).then(() => console.log(colors.greenBright('Done...')));
+  updateReport(Array.from(tests.values())).then(() => console.log(colors.greenBright('Done...')));
 })();
