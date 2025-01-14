@@ -73,21 +73,20 @@ let sleepMs = POLL_START_INTERVAL_MS;
           const t = await runTest(wpt, job.url, { ...DEFAULT_TEST_CONFIGURATION, location }, job.depth);
           queue.push({ type: JobType.CHECK_RESULT, ...t });
         } catch (error) {
-          csvWriter.writeRecords([error as TRecord]).then(() => console.log(colors.green('Report updated...')));
+          await csvWriter.writeRecords([{ ...(error as TRecord), url: job.url, depth: job.depth }]);
+          console.log(colors.green('Report updated...'));
         } finally {
           sleepMs = POLL_START_INTERVAL_MS;
         }
         break;
       case JobType.CHECK_RESULT:
         try {
-          if (!job.testId) {
-            continue;
-          }
           console.log(colors.blue(`Checking status for: ${trimUrl(job.url)}`));
           const result = await getResult(wpt, job.testId);
-          csvWriter
-            .writeRecords([{ ...result, url: job.url, depth: job.depth }])
-            .then(() => console.log(colors.green('Report updated...')));
+
+          await csvWriter.writeRecords([{ ...result, url: job.url, depth: job.depth }]);
+          console.log(colors.green('Report updated...'));
+
           const _depth = +(job.depth ?? 0);
           if (_depth >= MAX_DEPTH) {
             console.log(
@@ -125,7 +124,9 @@ let sleepMs = POLL_START_INTERVAL_MS;
         break;
     }
 
-    await sleep(sleepMs);
+    if (queue.length) {
+      await sleep(sleepMs);
+    }
   }
   console.log(colors.greenBright('Done...'));
 })();
