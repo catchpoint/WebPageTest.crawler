@@ -54,12 +54,18 @@ export const getResult = (wptRef: WebPageTest, id?: string | number): Promise<Pa
         testId: result?.data.id,
         status: RecordStatus.completed,
         pageLinks: fv.pageLinks,
-        Images: fv.Images.length,
+        Images: fv.Images?.length,
         htmlBytesUncompressed: fv.breakdown.html.bytesUncompressed,
         cssBytesUncompressed: fv.breakdown.css.bytesUncompressed,
         jsBytesUncompressed: fv.breakdown.js.bytesUncompressed,
         longTasks: fv.longTasks.length,
       };
+
+      fv.chromeUserTiming?.forEach((chromObject: { name: string; value: number; time: number }) => {
+        if (chromObject.name == 'CumulativeLayoutShift') csvObject.CumulativeLayoutShift = chromObject.value;
+        if (chromObject.name == 'domComplete') csvObject.domComplete = chromObject.time;
+      });
+
       resolve(csvObject);
     });
   });

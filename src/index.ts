@@ -85,7 +85,9 @@ let sleepMs = POLL_START_INTERVAL_MS;
           }
           console.log(colors.blue(`Checking status for: ${trimUrl(job.url)}`));
           const result = await getResult(wpt, job.testId);
-          csvWriter.writeRecords([result]).then(() => console.log(colors.green('Report updated...')));
+          csvWriter
+            .writeRecords([{ ...result, url: job.url, depth: job.depth }])
+            .then(() => console.log(colors.green('Report updated...')));
           const _depth = +(job.depth ?? 0);
           if (_depth >= MAX_DEPTH) {
             console.log(
