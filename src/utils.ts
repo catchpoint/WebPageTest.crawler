@@ -67,15 +67,6 @@ export const getResult = (wptRef: WebPageTest, id?: string | number): Promise<Pa
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const updateReport = (records: Partial<TRecord>[]) => {
-  const csvWriter = createObjectCsvWriter({
-    path: path.resolve(process.cwd(), REPORT_FILE),
-    header: CSV_HEADER,
-    fieldDelimiter: DEFAULT_DELIMITER,
-  });
-  return csvWriter.writeRecords(records);
-};
-
 export const trimUrl = (url: string) => {
   const _url = url.substring(0, 100);
   if (url.length > 100) {
@@ -83,30 +74,3 @@ export const trimUrl = (url: string) => {
   }
   return _url;
 };
-// maybe for later
-
-// export const combine = (a: TCsvRecord[], b: TCsvRecord[], prop: keyof TCsvRecord) =>
-//   Object.values(
-//     [...a, ...b].reduce((acc, v) => {
-//       const k = v[prop] as string;
-//       if (k && ["number", "string"].includes(typeof k)) {
-//         acc[k] = acc[k] ? { ...acc[k], ...v } : { ...v };
-//       }
-//       return acc;
-//     }, {} as { [k: string]: TCsvRecord })
-//   );
-
-// export const readCsv = <T>(filePath: string, headers?: string[], delimiter: string = ";"): Promise<T[]> => {
-//   const fileContent = fs.readFileSync(filePath, { encoding: "utf-8" });
-
-//   return new Promise((resolve, reject) => {
-//     parse(fileContent, { delimiter, columns: headers }, (error, result: T[]) => {
-//       if (error) {
-//         reject(error);
-//         return;
-//       }
-
-//       resolve(result);
-//     });
-//   });
-// };

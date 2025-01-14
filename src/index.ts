@@ -4,16 +4,21 @@ import * as fs from 'fs';
 import WebPageTest from 'webpagetest';
 import { program } from 'commander';
 import colors from 'yoctocolors';
-import { getResult, getIdealTestLocation, runTest, sleep, updateReport, trimUrl } from './utils';
+import { getResult, getIdealTestLocation, runTest, sleep, trimUrl } from './utils';
 import {
+  CSV_HEADER,
   DEFAULT_DELIMITER,
   DEFAULT_LOCATION,
   DEFAULT_MAX_DEPTH,
   DEFAULT_TEST_CONFIGURATION,
-  POLL_INTERVAL_MS,
+  POLL_CHECK_INTERVAL_MS,
+  POLL_START_INTERVAL_MS,
+  REPORT_FILE,
   WPT_SERVER,
 } from './const';
 import { JobType, TJob, TRecord } from './types';
+import { createObjectCsvWriter } from 'csv-writer';
+import path from 'path';
 
 const { version } = require('../package.json');
 
@@ -25,12 +30,17 @@ program
   .option('-ul, --limit [limit]', '[Optional] Max URLs to reach', parseInt)
   .parse(process.argv);
 
+const csvWriter = createObjectCsvWriter({
+  path: path.resolve(process.cwd(), REPORT_FILE),
+  header: CSV_HEADER,
+  fieldDelimiter: DEFAULT_DELIMITER,
+});
 const queue: TJob[] = [];
-const tests = new Map<string | number, Partial<TRecord>>();
+const testUrls = new Set<string>();
 const options = program.opts();
-
 const MAX_DEPTH = options.level ?? DEFAULT_MAX_DEPTH;
 const wpt = new WebPageTest(WPT_SERVER, options.key);
+let sleepMs = POLL_START_INTERVAL_MS;
 
 (async () => {
   const rootUrls = await fs.readFileSync(options.filePath, { encoding: 'utf-8' });
@@ -61,12 +71,11 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
         try {
           console.log(colors.magenta(`Running: ${trimUrl(job.url)}`));
           const t = await runTest(wpt, job.url, { ...DEFAULT_TEST_CONFIGURATION, location }, job.depth);
-          if (t.testId) {
-            tests.set(t.testId, t);
-            queue.push({ type: JobType.CHECK_RESULT, ...t });
-          }
+          queue.push({ type: JobType.CHECK_RESULT, ...t });
         } catch (error) {
-          tests.set(job.url, error as TRecord);
+          csvWriter.writeRecords([error as TRecord]).then(() => console.log(colors.green('Report updated...')));
+        } finally {
+          sleepMs = POLL_START_INTERVAL_MS;
         }
         break;
       case JobType.CHECK_RESULT:
@@ -76,8 +85,7 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
           }
           console.log(colors.blue(`Checking status for: ${trimUrl(job.url)}`));
           const result = await getResult(wpt, job.testId);
-          const _curr = tests.get(job.testId) ?? {};
-          tests.set(job.testId, { ..._curr, ...result });
+          csvWriter.writeRecords([result]).then(() => console.log(colors.green('Report updated...')));
           const _depth = +(job.depth ?? 0);
           if (_depth >= MAX_DEPTH) {
             console.log(
@@ -93,15 +101,12 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
             ),
           );
           result.pageLinks?.forEach((link) => {
-            if (Object.keys(tests).length >= options.limit) {
+            if (testUrls >= options.limit) {
               console.log(colors.cyan(`Reached url limit, skipping: ${trimUrl(job.url)}`));
               return;
             }
 
-            if (
-              Array.from(tests.values()).findIndex((t) => t.url === link) != -1 ||
-              queue.findIndex((q) => q.url === link) != -1
-            ) {
+            if (testUrls.has(link) || queue.findIndex((q) => q.url === link) != -1) {
               console.log(colors.cyan(`Skipping duplicated link ${trimUrl(job.url)}`));
               return;
             }
@@ -110,13 +115,15 @@ const wpt = new WebPageTest(WPT_SERVER, options.key);
         } catch (error) {
           console.log(colors.gray(error as string));
           queue.push(job);
+        } finally {
+          sleepMs = POLL_CHECK_INTERVAL_MS;
         }
         break;
       default:
         break;
     }
-    updateReport(Array.from(tests.values())).then(() => console.log(colors.green('Report updated...')));
-    await sleep(POLL_INTERVAL_MS);
+
+    await sleep(sleepMs);
   }
-  updateReport(Array.from(tests.values())).then(() => console.log(colors.greenBright('Done...')));
+  console.log(colors.greenBright('Done...'));
 })();
