@@ -28,7 +28,7 @@ There are 3 main config values : -
 
 ### 3. Adding a initial URLs txt file
 
-You can add your initial set of URLs to the startingUrls.txt file by seperating them using a coma.
+You can add your initial set of URLs to the startingUrls.txt file by seperating them using a comma.
 
 ![image](https://user-images.githubusercontent.com/31168643/122050545-2a021200-ce01-11eb-9400-31e7716791c0.png)
 

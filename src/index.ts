@@ -11,6 +11,7 @@ import {
   DEFAULT_LOCATION,
   DEFAULT_MAX_DEPTH,
   DEFAULT_TEST_CONFIGURATION,
+  INPUT_DELIMITER,
   POLL_CHECK_INTERVAL_MS,
   POLL_START_INTERVAL_MS,
   REPORT_FILE,
@@ -58,7 +59,7 @@ let sleepMs = POLL_START_INTERVAL_MS;
       return;
     }
   }
-  rootUrls.split(DEFAULT_DELIMITER).forEach((url) => queue.push({ type: JobType.RUN_TEST, url }));
+  rootUrls.split(INPUT_DELIMITER).forEach((url) => queue.push({ type: JobType.RUN_TEST, url }));
 
   while (queue.length > 0) {
     const job = queue.shift();
