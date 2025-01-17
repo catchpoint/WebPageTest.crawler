@@ -102,7 +102,7 @@ let sleepMs = POLL_START_INTERVAL_MS;
           }
           console.log(
             colors.yellow(
-              `Found ${result.pageLinks?.length ?? 0} links for ${job.testId} (${trimUrl(job.url)}) [dept:${_depth}]`,
+              `Found ${result.pageLinks?.length ?? 0} links for ${job.testId} (${trimUrl(job.url)}) [depth:${_depth}]`,
             ),
           );
           result.pageLinks?.forEach((link) => {
