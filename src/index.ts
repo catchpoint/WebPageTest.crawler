@@ -102,7 +102,7 @@ let sleepMs = POLL_START_INTERVAL_MS;
             ),
           );
           result.pageLinks?.forEach((link) => {
-            if (testUrls >= options.limit) {
+            if (options.limit && testUrls.size >= options.limit) {
               console.log(colors.cyan(`Reached url limit, skipping: ${trimUrl(job.url)}`));
               return;
             }
