@@ -1,8 +1,5 @@
-import path from 'path';
 import WebPageTest from 'webpagetest';
-import { createObjectCsvWriter } from 'csv-writer';
 import { RecordStatus, TRecord } from './types';
-import { REPORT_FILE, CSV_HEADER, DEFAULT_DELIMITER } from './const';
 
 export const runTest = (wptRef: WebPageTest, url: string, options: any, depth?: number | string): Promise<TRecord> => {
   return new Promise((resolve, reject) => {

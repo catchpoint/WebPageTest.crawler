@@ -59,7 +59,10 @@ let sleepMs = POLL_START_INTERVAL_MS;
       return;
     }
   }
-  rootUrls.split(INPUT_DELIMITER).forEach((url) => queue.push({ type: JobType.RUN_TEST, url }));
+  rootUrls.split(INPUT_DELIMITER).forEach((url) => {
+    testUrls.add(url);
+    queue.push({ type: JobType.RUN_TEST, url });
+  });
 
   while (queue.length > 0) {
     const job = queue.shift();
@@ -104,14 +107,16 @@ let sleepMs = POLL_START_INTERVAL_MS;
           );
           result.pageLinks?.forEach((link) => {
             if (options.limit && testUrls.size >= options.limit) {
-              console.log(colors.cyan(`Reached url limit, skipping: ${trimUrl(job.url)}`));
+              console.log(colors.cyan(`Reached url limit, skipping: ${trimUrl(link)}`));
               return;
             }
 
             if (testUrls.has(link) || queue.findIndex((q) => q.url === link) != -1) {
-              console.log(colors.cyan(`Skipping duplicated link ${trimUrl(job.url)}`));
+              console.log(colors.cyan(`Skipping duplicated link ${trimUrl(link)}`));
               return;
             }
+
+            testUrls.add(link);
             queue.push({ type: JobType.RUN_TEST, url: link, depth: _depth + 1 });
           });
         } catch (error) {
