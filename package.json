@@ -1,25 +1,27 @@
 {
   "name": "wpt-crawler",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
-  "main": "webpagetest.js",
-  "bin": "webpagetest.js",
+  "main": "index.js",
   "scripts": {
+    "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/abdulsuhail/wpt-crawler.git"
   },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/abdulsuhail/wpt-crawler/issues"
-  },
-  "homepage": "https://github.com/abdulsuhail/wpt-crawler#readme",
   "dependencies": {
-    "commander": "^8.0.0",
+    "commander": "^12.1.0",
     "csv-writer": "^1.6.0",
-    "webpagetest": "^0.4.0"
+    "webpagetest": "^0.7.6",
+    "yoctocolors": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/webpagetest": "^0.3.6",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^9.16.0",
+    "prettier": "^3.4.2",
+    "ts-node": "^10.9.2"
   }
 }
